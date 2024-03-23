@@ -5,8 +5,8 @@ import (
 	"os"
 	"vending-machine/domain"
 
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
+	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
 )
 
@@ -17,7 +17,6 @@ func InitDB() *gorm.DB {
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
 	dbName := os.Getenv("DB_NAME")
-	// dbSchema := os.Getenv("DB_SCHEMA")
 
 	// Create the connection string
 	// connectionString := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s search_path=%s sslmode=disable", dbHost, dbPort, dbUser, dbName, dbPass, dbSchema)
