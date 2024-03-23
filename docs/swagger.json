@@ -1,0 +1,17 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {},
+    "definitions": {
+        "dto.Response": {
+            "description": "Represents a Response Payload Data",
+            "type": "object",
+            "properties": {
+                "data": {},
+                "messages": {}
+            }
+        }
+    }
+}

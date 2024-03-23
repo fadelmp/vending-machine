@@ -1,3 +1,5 @@
+// domain/Vending.go
+
 package domain
 
 import (
@@ -5,6 +7,9 @@ import (
 )
 
 // Database Design
+
+// @Summary Vending object
+// @Description Represents a vending machine menu
 type Vending struct {
 	gorm.Model
 	Base  Base

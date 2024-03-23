@@ -1,0 +1,11 @@
+definitions:
+  dto.Response:
+    description: Represents a Response Payload Data
+    properties:
+      data: {}
+      messages: {}
+    type: object
+info:
+  contact: {}
+paths: {}
+swagger: "2.0"

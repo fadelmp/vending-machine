@@ -30,6 +30,9 @@ func NewVendingHandler(usecase usecase.VendingUsecaseContract) *VendingHandler {
 	}
 }
 
+// @Summary Get All Vending
+// @Description Retrieve a list of all Vending
+// @Success 200 {object} dto.Response
 func (h *VendingHandler) GetAll(e echo.Context) error {
 
 	vendingDtos := h.usecase.GetAll()
@@ -41,6 +44,9 @@ func (h *VendingHandler) GetAll(e echo.Context) error {
 	return Success(e, message.GetSuccess, vendingDtos)
 }
 
+// @Summary Get Vending by ID
+// @Description Retrieve an Vending from the vending machine by its ID
+// @Success 200 {object} dto.Response
 func (h *VendingHandler) GetById(e echo.Context) error {
 
 	var vending dto.Vending
@@ -58,6 +64,9 @@ func (h *VendingHandler) GetById(e echo.Context) error {
 	return Success(e, message.GetSuccess, vendingDto)
 }
 
+// @Summary Create a new Vending
+// @Description Add a new Vending to the vending machine
+// @Success 200 {object} dto.Response
 func (h *VendingHandler) Create(e echo.Context) error {
 
 	var Vending dto.Vending
@@ -73,6 +82,9 @@ func (h *VendingHandler) Create(e echo.Context) error {
 	return Success(e, message.CreateSuccess, "")
 }
 
+// @Summary Update an existing Vending
+// @Description Update an Vending in the vending machine by its ID
+// @Success 200 {object} dto.Response
 func (h *VendingHandler) Update(e echo.Context) error {
 
 	var vending dto.Vending
@@ -88,6 +100,9 @@ func (h *VendingHandler) Update(e echo.Context) error {
 	return Success(e, message.UpdateSuccess, "")
 }
 
+// @Summary Delete an dto.Vending
+// @Description Remove an dto.Vending from the vending machine by its ID
+// @Success 200 {object} dto.Response
 func (h *VendingHandler) Delete(e echo.Context) error {
 
 	var vending dto.Vending
