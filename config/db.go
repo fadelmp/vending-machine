@@ -19,10 +19,9 @@ func InitDB() *gorm.DB {
 	dbName := os.Getenv("DB_NAME")
 
 	// Create the connection string
-	// connectionString := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s search_path=%s sslmode=disable", dbHost, dbPort, dbUser, dbName, dbPass, dbSchema)
-	connectionString := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", dbHost, dbPort, dbUser, dbName, dbPass)
+	connStr := fmt.Sprintf("sslmode=disable host=%s port=%s user=%s dbname=%s password=%s", dbHost, dbPort, dbUser, dbName, dbPass)
 
-	db, err := gorm.Open("postgres", connectionString)
+	db, err := gorm.Open("postgres", connStr)
 	if err != nil {
 		logrus.Error("Cannot Connect to PostgreSQL DB")
 		panic(err)
