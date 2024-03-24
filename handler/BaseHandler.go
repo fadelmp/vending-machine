@@ -5,7 +5,6 @@ import (
 	"vending-machine/message"
 
 	"github.com/labstack/echo/v4"
-	_ "github.com/labstack/echo/v4"
 )
 
 func CreateResponse(c echo.Context, httpCode int, response dto.Response) error {
@@ -47,4 +46,13 @@ func BadRequest(c echo.Context) error {
 	resp := &dto.Response{Messages: message.BadRequest}
 
 	return CreateResponse(c, httpCode, *resp)
+}
+
+func SetUsername(vendingDto *dto.Vending, c echo.Context) {
+
+	username := c.Request().Header.Get("username")
+
+	vendingDto.CreatedBy = username
+	vendingDto.UpdatedBy = username
+	vendingDto.DeletedBy = username
 }

@@ -3,6 +3,7 @@ package usecase
 import (
 	"errors"
 	"vending-machine/comparator"
+	"vending-machine/domain"
 	"vending-machine/dto"
 	"vending-machine/mapper"
 	"vending-machine/message"
@@ -65,11 +66,10 @@ func (u *VendingUsecase) Create(dto dto.Vending) error {
 		return err
 	}
 
-	// Create base data
-	base := mapper.Create(dto.Base.CreatedBy)
-
 	// map Vending dto to Vending domain
-	vending := u.mapper.ToVending(dto, base)
+	vending := u.mapper.ToVending(dto)
+
+	u.mapper.Create(&vending, dto.CreatedBy)
 
 	// create Vending
 	_, err := u.repo.Create(vending)
@@ -94,11 +94,10 @@ func (u *VendingUsecase) Update(dto dto.Vending) error {
 		return err
 	}
 
-	// Update base data
-	base := mapper.Update(dto.Base.CreatedBy)
-
 	// Map Vending dto to Vending domain
-	vending := u.mapper.ToVending(dto, base)
+	vending := u.mapper.ToVending(dto)
+
+	u.mapper.Update(&vending, dto.UpdatedBy)
 
 	// Update Vending and return
 	_, err := u.repo.Update(vending)
@@ -113,17 +112,17 @@ func (u *VendingUsecase) Update(dto dto.Vending) error {
 
 func (u *VendingUsecase) Delete(dto dto.Vending) error {
 
+	var vending domain.Vending
 	// Check Id whether not found
 	err := u.comparator.CheckId(dto.Id)
 	if err != nil {
 		return err
 	}
 
-	// Delete Base data
-	base := mapper.Delete(dto.Base.CreatedBy)
+	u.mapper.Delete(&vending, dto.UpdatedBy)
 
 	// Delete Vending and return
-	err = u.repo.Delete(dto.Id, base)
+	err = u.repo.Delete(vending)
 
 	// Return Error if err not nil
 	if err != nil {

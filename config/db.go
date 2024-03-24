@@ -27,6 +27,9 @@ func InitDB() *gorm.DB {
 		panic(err)
 	}
 
+	// Enable logging mode to print SQL statements
+	db = db.Debug()
+
 	createTable(db)
 	migrateDDL(db)
 

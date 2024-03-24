@@ -69,14 +69,19 @@ func (h *VendingHandler) GetById(e echo.Context) error {
 // @Success 200 {object} dto.Response
 func (h *VendingHandler) Create(e echo.Context) error {
 
-	var Vending dto.Vending
+	var vendingDto dto.Vending
+	SetUsername(&vendingDto, e)
 
-	if e.Bind(&Vending) != nil {
+	if e.Bind(&vendingDto) != nil {
 		return BadRequest(e)
 	}
 
-	if err := h.usecase.Create(Vending); err != nil {
-		return Error(e, err)
+	if Validate(&vendingDto) != nil {
+		return BadRequest(e)
+	}
+
+	if err := h.usecase.Create(vendingDto); err != nil {
+		return Error(e, err.Error())
 	}
 
 	return Success(e, message.CreateSuccess, "")
@@ -87,14 +92,19 @@ func (h *VendingHandler) Create(e echo.Context) error {
 // @Success 200 {object} dto.Response
 func (h *VendingHandler) Update(e echo.Context) error {
 
-	var vending dto.Vending
+	var vendingDto dto.Vending
+	SetUsername(&vendingDto, e)
 
-	if e.Bind(&vending) != nil {
+	if e.Bind(&vendingDto) != nil {
 		return BadRequest(e)
 	}
 
-	if err := h.usecase.Update(vending); err != nil {
-		return Error(e, err)
+	if Validate(&vendingDto) != nil {
+		return BadRequest(e)
+	}
+
+	if err := h.usecase.Update(vendingDto); err != nil {
+		return Error(e, err.Error())
 	}
 
 	return Success(e, message.UpdateSuccess, "")
@@ -105,14 +115,15 @@ func (h *VendingHandler) Update(e echo.Context) error {
 // @Success 200 {object} dto.Response
 func (h *VendingHandler) Delete(e echo.Context) error {
 
-	var vending dto.Vending
+	var vendingDto dto.Vending
+	SetUsername(&vendingDto, e)
 
-	if e.Bind(&vending) != nil {
+	if e.Bind(&vendingDto) != nil {
 		return BadRequest(e)
 	}
 
-	if err := h.usecase.Delete(vending); err != nil {
-		return Error(e, message.DeleteFailed)
+	if err := h.usecase.Delete(vendingDto); err != nil {
+		return Error(e, err.Error())
 	}
 
 	return Success(e, message.DeleteSuccess, "")

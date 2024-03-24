@@ -2,6 +2,7 @@ package comparator
 
 import (
 	"errors"
+	"fmt"
 	"vending-machine/dto"
 	"vending-machine/message"
 	"vending-machine/repository"
@@ -32,6 +33,9 @@ func (c *VendingComparator) CheckName(dto dto.Vending) error {
 	// Get data by name
 	vending := c.repo.GetByName(dto.Name)
 
+	fmt.Println("result")
+	fmt.Println(vending)
+
 	// Return error if data exists
 	if vending.Id != 0 && vending.Id != dto.Id {
 		return errors.New(message.NameExists)
@@ -45,8 +49,13 @@ func (c *VendingComparator) CheckId(id uint) error {
 	// Get data by Id
 	vending := c.repo.GetById(id)
 
+	fmt.Println(id)
+	fmt.Println("vending data")
+	fmt.Println(vending)
+
 	// Return error if data not found
 	if vending.Id == 0 {
+		fmt.Println("goto if else")
 		return errors.New(message.NotFound)
 	}
 

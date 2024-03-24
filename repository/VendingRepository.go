@@ -17,7 +17,7 @@ type VendingRepositoryContract interface {
 
 	Create(domain.Vending) (domain.Vending, error)
 	Update(domain.Vending) (domain.Vending, error)
-	Delete(uint, domain.Base) error
+	Delete(domain.Vending) error
 }
 
 // Class
@@ -42,6 +42,7 @@ func (r *VendingRepository) GetAll() []domain.Vending {
 
 	keys := "vendings"
 	query := r.DB.Model(&vendings).
+		Unscoped().
 		Where("is_deleted=?", false).
 		Find(&vendings)
 
@@ -57,6 +58,7 @@ func (r *VendingRepository) GetById(id uint) domain.Vending {
 
 	keys := "vending_id_" + strconv.FormatUint(uint64(id), 10)
 	query := r.DB.Model(&vending).
+		Unscoped().
 		Where("is_deleted=?", false).
 		Where("id=?", id).
 		Find(&vending)
@@ -73,6 +75,7 @@ func (r *VendingRepository) GetByName(name string) domain.Vending {
 
 	keys := "vending_name_" + name
 	query := r.DB.Model(&vending).
+		Unscoped().
 		Where("is_deleted=?", false).
 		Where("name=?", name).
 		Find(&vending)
@@ -98,15 +101,13 @@ func (r *VendingRepository) Update(vending domain.Vending) (domain.Vending, erro
 	return vending, err
 }
 
-func (r *VendingRepository) Delete(id uint, base domain.Base) error {
-
-	var vending domain.Vending
+func (r *VendingRepository) Delete(vending domain.Vending) error {
 
 	// Soft Delete
-	return r.DB.Model(&vending).Where("id=?", id).Updates(map[string]interface{}{
-		"is_actived": false,
-		"is_deleted": true,
-		"updated_at": base.UpdatedAt,
-		"updated_by": base.UpdatedBy,
+	return r.DB.Model(&vending).Where("id=?", vending.Id).Updates(map[string]interface{}{
+		"is_actived": vending.IsActived,
+		"is_deleted": vending.IsDeleted,
+		"deleted_at": vending.DeletedAt,
+		"deleted_by": vending.DeletedBy,
 	}).Error
 }

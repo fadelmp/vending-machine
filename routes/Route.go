@@ -11,7 +11,7 @@ import (
 func Init(routes *echo.Echo, db *gorm.DB, redis *redis.Client) *echo.Echo {
 
 	// Swagger Documentation Route
-	SwaggerRoute(routes)
+	//SwaggerRoute(routes)
 
 	// Vending Route & Injection
 	vending := injection.VendingInjection(db, redis)

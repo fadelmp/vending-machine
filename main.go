@@ -8,7 +8,7 @@ import (
 	routes2 "vending-machine/routes"
 
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	middleware "github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
