@@ -1,6 +1,7 @@
 package mapper
 
 import (
+	"time"
 	"vending-machine/domain"
 	"vending-machine/dto"
 )
@@ -9,7 +10,7 @@ import (
 type BaseMapperContract interface {
 	Create(*domain.Base, string)
 	Update(*domain.Base, string)
-	Delete(*domain.Base, string)
+	Delete(*domain.Vending, uint, string)
 
 	ToBaseDto(base domain.Base) dto.Base
 }
@@ -42,13 +43,15 @@ func (m *BaseMapper) Update(Base *domain.Base, name string) {
 	Base.UpdatedBy = name
 }
 
-func (m *BaseMapper) Delete(Base *domain.Base, name string) {
+func (m *BaseMapper) Delete(domain *domain.Vending, id uint, name string) {
 
 	// Set Deleted Value
-	Base.IsActived = false
-	Base.IsDeleted = true
-	Base.UpdatedBy = name
-	Base.DeletedBy = name
+	domain.Id = id
+	domain.Base.IsActived = false
+	domain.Base.IsDeleted = true
+	domain.Base.UpdatedBy = name
+	domain.Base.DeletedBy = name
+	domain.Base.DeletedAt = time.Now()
 }
 
 func (m *BaseMapper) ToBaseDto(base domain.Base) dto.Base {

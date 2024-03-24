@@ -88,24 +88,21 @@ func (r *VendingRepository) GetByName(name string) domain.Vending {
 
 func (r *VendingRepository) Create(vending *domain.Vending) error {
 
-	// Create Vending
-	err := r.DB.Create(&vending).Error
-
 	// Flush Vending Cache
 	config.FlushData(r.Redis, "vending*")
 
-	return err
+	// Create Vending
+	return r.DB.Create(&vending).Error
+
 }
 
 func (r *VendingRepository) Update(vending *domain.Vending) error {
 
-	// Update Vending by id
-	err := r.DB.Model(&vending).Update(&vending).Error
-
 	// Flush Vending Cache
 	config.FlushData(r.Redis, "vending*")
 
-	return err
+	// Update Vending
+	return r.DB.Model(&vending).Unscoped().Update(&vending).Error
 }
 
 func (r *VendingRepository) Delete(vending *domain.Vending) error {
@@ -113,11 +110,6 @@ func (r *VendingRepository) Delete(vending *domain.Vending) error {
 	// Flush Vending Cache
 	config.FlushData(r.Redis, "vending*")
 
-	// Soft Delete
-	return r.DB.Model(&vending).Where("id=?", vending.Id).Updates(map[string]interface{}{
-		"is_actived": vending.Base.IsActived,
-		"is_deleted": vending.Base.IsDeleted,
-		"deleted_at": vending.Base.DeletedAt,
-		"deleted_by": vending.Base.DeletedBy,
-	}).Error
+	// Delete Vending
+	return r.DB.Model(&vending).Unscoped().Update(&vending).Error
 }

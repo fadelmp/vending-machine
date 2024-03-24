@@ -37,10 +37,12 @@ func (h *VendingHandler) GetAll(e echo.Context) error {
 
 	vendingDtos := h.usecase.GetAll()
 
+	// Check Value
 	if len(vendingDtos) == 0 {
 		return NotFound(e, message.NotFound)
 	}
 
+	// Return Success
 	return Success(e, message.GetSuccess, vendingDtos)
 }
 
@@ -51,16 +53,25 @@ func (h *VendingHandler) GetById(e echo.Context) error {
 
 	var vending dto.Vending
 
+	// Bind Value
 	if e.Bind(&vending) != nil {
 		return BadRequest(e)
 	}
 
+	// Parse Id
+	if ParseId(e, &vending) != nil {
+		return BadRequest(e)
+	}
+
+	// Get By Id
 	vendingDto := h.usecase.GetById(vending.Id)
 
+	// Check Value
 	if vendingDto.Id == 0 {
 		return NotFound(e, message.NotFound)
 	}
 
+	// Return Success
 	return Success(e, message.GetSuccess, vendingDto)
 }
 
@@ -103,6 +114,10 @@ func (h *VendingHandler) Update(e echo.Context) error {
 		return BadRequest(e)
 	}
 
+	if ParseId(e, &vendingDto) != nil {
+		return BadRequest(e)
+	}
+
 	if err := h.usecase.Update(vendingDto); err != nil {
 		return Error(e, err.Error())
 	}
@@ -119,6 +134,10 @@ func (h *VendingHandler) Delete(e echo.Context) error {
 	SetUsername(&vendingDto, e)
 
 	if e.Bind(&vendingDto) != nil {
+		return BadRequest(e)
+	}
+
+	if ParseId(e, &vendingDto) != nil {
 		return BadRequest(e)
 	}
 

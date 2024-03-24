@@ -76,14 +76,11 @@ func (u *VendingUsecase) Create(dto dto.Vending) error {
 	u.baseMapper.Create(&vending.Base, dto.Base.CreatedBy)
 
 	// Create Vending
-	err := u.repo.Create(&vending)
-
-	// Return Error if err not nil
-	if err != nil {
+	if u.repo.Create(&vending) != nil {
 		return errors.New(message.CreateFailed)
 	}
 
-	return err
+	return nil
 }
 
 func (u *VendingUsecase) Update(dto dto.Vending) error {
@@ -101,37 +98,33 @@ func (u *VendingUsecase) Update(dto dto.Vending) error {
 	// Map Vending dto to Vending domain
 	vending := u.mapper.ToVending(dto)
 
+	// Set Updated Value
 	u.baseMapper.Update(&vending.Base, dto.Base.UpdatedBy)
 
 	// Update Vending and return
-	err := u.repo.Update(&vending)
-
-	// Return Error if err not nil
-	if err != nil {
+	if u.repo.Update(&vending) != nil {
 		return errors.New(message.UpdateFailed)
 	}
 
-	return err
+	return nil
 }
 
 func (u *VendingUsecase) Delete(dto dto.Vending) error {
 
 	var vending domain.Vending
+
 	// Check Id whether not found
-	err := u.comparator.CheckId(dto.Id)
-	if err != nil {
+	if err := u.comparator.CheckId(dto.Id); err != nil {
 		return err
 	}
 
-	u.baseMapper.Delete(&vending.Base, dto.Base.UpdatedBy)
+	// Set Deleted Value
+	u.baseMapper.Delete(&vending, dto.Id, dto.Base.UpdatedBy)
 
 	// Delete Vending and return
-	err = u.repo.Delete(&vending)
-
-	// Return Error if err not nil
-	if err != nil {
+	if u.repo.Delete(&vending) != nil {
 		return errors.New(message.DeleteFailed)
 	}
 
-	return err
+	return nil
 }
