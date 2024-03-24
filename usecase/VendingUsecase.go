@@ -22,6 +22,7 @@ type VendingUsecaseContract interface {
 
 // Class
 type VendingUsecase struct {
+	baseMapper mapper.BaseMapperContract
 	mapper     mapper.VendingMapperContract
 	comparator comparator.VendingComparatorContract
 	repo       repository.VendingRepositoryContract
@@ -29,12 +30,14 @@ type VendingUsecase struct {
 
 // Constructor
 func NewVendingUsecase(
-	repo repository.VendingRepositoryContract,
+	baseMapper mapper.BaseMapperContract,
 	mapper mapper.VendingMapperContract,
+	repo repository.VendingRepositoryContract,
 	comparator comparator.VendingComparatorContract) *VendingUsecase {
 	return &VendingUsecase{
-		repo:       repo,
+		baseMapper: baseMapper,
 		mapper:     mapper,
+		repo:       repo,
 		comparator: comparator,
 	}
 }
@@ -69,7 +72,7 @@ func (u *VendingUsecase) Create(dto dto.Vending) error {
 	// map Vending dto to Vending domain
 	vending := u.mapper.ToVending(dto)
 
-	u.mapper.Create(&vending, dto.CreatedBy)
+	u.baseMapper.Create(&vending.Base, dto.Base.CreatedBy)
 
 	// create Vending
 	_, err := u.repo.Create(vending)
@@ -97,7 +100,7 @@ func (u *VendingUsecase) Update(dto dto.Vending) error {
 	// Map Vending dto to Vending domain
 	vending := u.mapper.ToVending(dto)
 
-	u.mapper.Update(&vending, dto.UpdatedBy)
+	u.baseMapper.Update(&vending.Base, dto.Base.UpdatedBy)
 
 	// Update Vending and return
 	_, err := u.repo.Update(vending)
@@ -119,7 +122,7 @@ func (u *VendingUsecase) Delete(dto dto.Vending) error {
 		return err
 	}
 
-	u.mapper.Delete(&vending, dto.UpdatedBy)
+	u.baseMapper.Delete(&vending.Base, dto.Base.UpdatedBy)
 
 	// Delete Vending and return
 	err = u.repo.Delete(vending)

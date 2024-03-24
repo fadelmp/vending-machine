@@ -105,9 +105,9 @@ func (r *VendingRepository) Delete(vending domain.Vending) error {
 
 	// Soft Delete
 	return r.DB.Model(&vending).Where("id=?", vending.Id).Updates(map[string]interface{}{
-		"is_actived": vending.IsActived,
-		"is_deleted": vending.IsDeleted,
-		"deleted_at": vending.DeletedAt,
-		"deleted_by": vending.DeletedBy,
+		"is_actived": vending.Base.IsActived,
+		"is_deleted": vending.Base.IsDeleted,
+		"deleted_at": vending.Base.DeletedAt,
+		"deleted_by": vending.Base.DeletedBy,
 	}).Error
 }

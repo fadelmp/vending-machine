@@ -52,7 +52,7 @@ func SetUsername(vendingDto *dto.Vending, c echo.Context) {
 
 	username := c.Request().Header.Get("username")
 
-	vendingDto.CreatedBy = username
-	vendingDto.UpdatedBy = username
-	vendingDto.DeletedBy = username
+	vendingDto.Base.CreatedBy = username
+	vendingDto.Base.UpdatedBy = username
+	vendingDto.Base.DeletedBy = username
 }

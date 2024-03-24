@@ -13,11 +13,12 @@ import (
 
 func VendingInjection(db *gorm.DB, redis *redis.Client) *handler.VendingHandler {
 
-	mapper := mapper.NewVendingMapper()
+	baseMapper := mapper.NewBaseMapper()
+	vendingMapper := mapper.NewVendingMapper()
 	repo := repository.NewVendingRepository(db, redis)
 
 	comparator := comparator.NewVendingComparator(repo)
-	usecase := usecase.NewVendingUsecase(repo, mapper, comparator)
+	usecase := usecase.NewVendingUsecase(baseMapper, vendingMapper, repo, comparator)
 	handler := handler.NewVendingHandler(usecase)
 
 	return handler
