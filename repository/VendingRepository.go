@@ -15,9 +15,9 @@ type VendingRepositoryContract interface {
 	GetById(uint) domain.Vending
 	GetByName(string) domain.Vending
 
-	Create(domain.Vending) (domain.Vending, error)
-	Update(domain.Vending) (domain.Vending, error)
-	Delete(domain.Vending) error
+	Create(*domain.Vending) error
+	Update(*domain.Vending) error
+	Delete(*domain.Vending) error
 }
 
 // Class
@@ -40,14 +40,14 @@ func (r *VendingRepository) GetAll() []domain.Vending {
 
 	var vendings []domain.Vending
 
-	keys := "vendings"
+	// Get All Data
 	query := r.DB.Model(&vendings).
 		Unscoped().
 		Where("is_deleted=?", false).
 		Find(&vendings)
 
-	// Get All Vending
-	config.Query(r.Redis, query, keys)
+	// Get Data From Redis
+	config.QueryData(r.Redis, query, "vendings")
 
 	return vendings
 }
@@ -56,15 +56,15 @@ func (r *VendingRepository) GetById(id uint) domain.Vending {
 
 	var vending domain.Vending
 
-	keys := "vending_id_" + strconv.FormatUint(uint64(id), 10)
+	// Get Data By Id
 	query := r.DB.Model(&vending).
 		Unscoped().
 		Where("is_deleted=?", false).
 		Where("id=?", id).
 		Find(&vending)
 
-	// Get Vending By Id
-	config.Query(r.Redis, query, keys)
+	// Get Data From Redis
+	config.QueryData(r.Redis, query, "vending_id_"+strconv.FormatUint(uint64(id), 10))
 
 	return vending
 }
@@ -73,35 +73,45 @@ func (r *VendingRepository) GetByName(name string) domain.Vending {
 
 	var vending domain.Vending
 
-	keys := "vending_name_" + name
+	// Get Data By Name
 	query := r.DB.Model(&vending).
 		Unscoped().
 		Where("is_deleted=?", false).
 		Where("name=?", name).
 		Find(&vending)
 
-	config.Query(r.Redis, query, keys)
+	// Get Data From Redis
+	config.QueryData(r.Redis, query, "vending_name_"+name)
 
 	return vending
 }
 
-func (r *VendingRepository) Create(vending domain.Vending) (domain.Vending, error) {
+func (r *VendingRepository) Create(vending *domain.Vending) error {
 
 	// Create Vending
 	err := r.DB.Create(&vending).Error
 
-	return vending, err
+	// Flush Vending Cache
+	config.FlushData(r.Redis, "vending*")
+
+	return err
 }
 
-func (r *VendingRepository) Update(vending domain.Vending) (domain.Vending, error) {
+func (r *VendingRepository) Update(vending *domain.Vending) error {
 
 	// Update Vending by id
 	err := r.DB.Model(&vending).Update(&vending).Error
 
-	return vending, err
+	// Flush Vending Cache
+	config.FlushData(r.Redis, "vending*")
+
+	return err
 }
 
-func (r *VendingRepository) Delete(vending domain.Vending) error {
+func (r *VendingRepository) Delete(vending *domain.Vending) error {
+
+	// Flush Vending Cache
+	config.FlushData(r.Redis, "vending*")
 
 	// Soft Delete
 	return r.DB.Model(&vending).Where("id=?", vending.Id).Updates(map[string]interface{}{

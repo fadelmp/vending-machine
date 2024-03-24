@@ -69,13 +69,14 @@ func (u *VendingUsecase) Create(dto dto.Vending) error {
 		return err
 	}
 
-	// map Vending dto to Vending domain
+	// Map Vending Dto to Vending Domain
 	vending := u.mapper.ToVending(dto)
 
+	// Set Created Value
 	u.baseMapper.Create(&vending.Base, dto.Base.CreatedBy)
 
-	// create Vending
-	_, err := u.repo.Create(vending)
+	// Create Vending
+	err := u.repo.Create(&vending)
 
 	// Return Error if err not nil
 	if err != nil {
@@ -103,7 +104,7 @@ func (u *VendingUsecase) Update(dto dto.Vending) error {
 	u.baseMapper.Update(&vending.Base, dto.Base.UpdatedBy)
 
 	// Update Vending and return
-	_, err := u.repo.Update(vending)
+	err := u.repo.Update(&vending)
 
 	// Return Error if err not nil
 	if err != nil {
@@ -125,7 +126,7 @@ func (u *VendingUsecase) Delete(dto dto.Vending) error {
 	u.baseMapper.Delete(&vending.Base, dto.Base.UpdatedBy)
 
 	// Delete Vending and return
-	err = u.repo.Delete(vending)
+	err = u.repo.Delete(&vending)
 
 	// Return Error if err not nil
 	if err != nil {

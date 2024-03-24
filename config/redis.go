@@ -28,7 +28,28 @@ func InitRedis() *redis.Client {
 	return client
 }
 
-func Query(rdb *redis.Client, query *gorm.DB, key string) interface{} {
+func FlushData(rdb *redis.Client, key string) {
+
+	// Use the SCAN command to find keys matching the pattern "vending*"
+	iter := rdb.Scan(0, key, 0).Iterator()
+	for iter.Next() {
+		key := iter.Val()
+		fmt.Printf("Deleting key: %s\n", key)
+		err := rdb.Del(key).Err()
+		if err != nil {
+			log.Fatalf("Error deleting key %s: %v", key, err)
+		}
+	}
+
+	if err := iter.Err(); err != nil {
+		log.Fatalf("Error iterating keys: %v", err)
+	}
+
+	fmt.Println("Keys matching pattern 'vending*' deleted successfully!")
+
+}
+
+func QueryData(rdb *redis.Client, query *gorm.DB, key string) interface{} {
 
 	data := GetData(rdb, key)
 	if data != nil {

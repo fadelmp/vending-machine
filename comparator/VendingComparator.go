@@ -2,7 +2,6 @@ package comparator
 
 import (
 	"errors"
-	"fmt"
 	"vending-machine/dto"
 	"vending-machine/message"
 	"vending-machine/repository"
@@ -10,8 +9,8 @@ import (
 
 // Interface
 type VendingComparatorContract interface {
-	CheckName(dto.Vending) error
 	CheckId(uint) error
+	CheckName(dto.Vending) error
 }
 
 // Class
@@ -28,35 +27,29 @@ func NewVendingComparator(repo repository.VendingRepositoryContract) *VendingCom
 
 // Implementation
 
-func (c *VendingComparator) CheckName(dto dto.Vending) error {
+func (c *VendingComparator) CheckId(id uint) error {
 
-	// Get data by name
-	vending := c.repo.GetByName(dto.Name)
+	// Get Data By Id
+	vending := c.repo.GetById(id)
 
-	fmt.Println("result")
-	fmt.Println(vending)
+	// Return Error If Data Not Found
+	if vending.Id == 0 {
 
-	// Return error if data exists
-	if vending.Id != 0 && vending.Id != dto.Id {
-		return errors.New(message.NameExists)
+		return errors.New(message.NotFound)
 	}
 
 	return nil
 }
 
-func (c *VendingComparator) CheckId(id uint) error {
+func (c *VendingComparator) CheckName(dto dto.Vending) error {
 
-	// Get data by Id
-	vending := c.repo.GetById(id)
+	// Get Data By Name
+	vending := c.repo.GetByName(dto.Name)
 
-	fmt.Println(id)
-	fmt.Println("vending data")
-	fmt.Println(vending)
+	// Return Error If Data Exists
+	if vending.Id != 0 && vending.Id != dto.Id {
 
-	// Return error if data not found
-	if vending.Id == 0 {
-		fmt.Println("goto if else")
-		return errors.New(message.NotFound)
+		return errors.New(message.NameExists)
 	}
 
 	return nil
