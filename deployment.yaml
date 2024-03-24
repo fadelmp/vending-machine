@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vending-machine
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vending-machine
+  template:
+    metadata:
+      labels:
+        app: vending-machine
+    spec:
+      containers:
+      - name: vending-machine
+        image: perqara/vending-machine-image:latest
+        ports:
+        - containerPort: 8000

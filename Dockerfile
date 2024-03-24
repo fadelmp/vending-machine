@@ -1,15 +1,32 @@
-#build stage
-FROM golang:alpine AS builder
-RUN apk add --no-cache git
-WORKDIR /go/src/app
-COPY . .
-RUN go get -d -v ./...
-RUN go build -o /go/bin/app -v ./...
+# Use a minimal base image
+FROM golang:alpine as builder
 
-#final stage
+# Set the current working directory inside the container
+WORKDIR /app
+
+# Copy the Go modules manifests
+COPY go.mod go.sum ./
+
+# Download dependencies
+RUN go mod download
+
+# Copy the source code into the container
+COPY . .
+
+# Build the Go app
+RUN CGO_ENABLED=0 GOOS=linux go build -o app .
+
+# Start a new stage from scratch
 FROM alpine:latest
-RUN apk --no-cache add ca-certificates
-COPY --from=builder /go/bin/app /app
-ENTRYPOINT /app
-LABEL Name=master-activity Version=0.0.1
-EXPOSE 4022
+
+# Set the working directory
+WORKDIR /root/
+
+# Copy the pre-built binary from the previous stage
+COPY --from=builder /app/app .
+
+# Expose port 8000 to the outside world
+EXPOSE 8000
+
+# Command to run the executable
+CMD ["./app"]
