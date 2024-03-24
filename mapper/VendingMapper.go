@@ -23,6 +23,15 @@ func NewVendingMapper() *VendingMapper {
 
 // Implementation
 
+func (m *VendingMapper) ToVending(dto dto.Vending) domain.Vending {
+
+	return domain.Vending{
+		Id:    dto.Id,
+		Name:  dto.Name,
+		Price: dto.Price,
+	}
+}
+
 func (m *VendingMapper) ToVendingDto(vending domain.Vending) dto.Vending {
 
 	return dto.Vending{
@@ -42,13 +51,4 @@ func (m *VendingMapper) ToVendingDtoList(vendings []domain.Vending) []dto.Vendin
 	}
 
 	return vendingDtos
-}
-
-func (m *VendingMapper) ToVending(dto dto.Vending) domain.Vending {
-
-	return domain.Vending{
-		Id:    dto.Id,
-		Name:  dto.Name,
-		Price: dto.Price,
-	}
 }
